@@ -124,3 +124,143 @@ export async function getProperties(filters?: PropertyFilters): Promise<Property
   });
   return response.data;
 }
+
+/**
+ * Obtiene el detalle de una propiedad individual por su ID.
+ */
+export async function getPropertyById(propertyId: number): Promise<Property> {
+  const response = await api.get<Property>(`/properties/${propertyId}`);
+  return response.data;
+}
+
+export interface PublicReviewItem {
+  id: number;
+  reviewer_id: number;
+  reviewer_email?: string | null;
+  property_id?: number | null;
+  rating: number;
+  comment?: string | null;
+  created_at: string;
+}
+
+export interface PublicUserProfile {
+  id: number;
+  email: string;
+  role: "TENANT" | "OWNER" | "ADMIN" | string;
+  created_at: string;
+  rating_average: number;
+  reviews_count: number;
+  reviews: PublicReviewItem[];
+  properties: Property[];
+}
+
+/**
+ * Obtiene el perfil público de un usuario (Dueño o Inquilino), incluyendo sus calificaciones
+ * y su catálogo de propiedades activas.
+ */
+export async function getProfile(userId: number): Promise<PublicUserProfile> {
+  const response = await api.get<PublicUserProfile>(`/profile/${userId}`);
+  return response.data;
+}
+
+export interface CreateReviewData {
+  reviewed_id: number;
+  property_id?: number | null;
+  rating: number;
+  comment?: string | null;
+}
+
+/**
+ * Publica una calificación/reseña hacia otro usuario.
+ */
+export async function createReview(data: CreateReviewData): Promise<PublicReviewItem> {
+  const response = await api.post<PublicReviewItem>("/reviews/", data);
+  return response.data;
+}
+
+/**
+ * Obtiene los datos del usuario autenticado actualmente (incluyendo su rol real).
+ */
+export async function getMe(): Promise<User> {
+  const response = await api.get<User>("/me");
+  return response.data;
+}
+
+export interface CreatePropertyData {
+  title: string;
+  description?: string | null;
+  price: number;
+  neighborhood: string;
+  bedrooms: number;
+  property_type?: string | null;
+  contract_requirements?: string | null;
+  status?: "AVAILABLE" | "RENTED" | "PAUSED" | "EXPIRED";
+}
+
+/**
+ * Crea una nueva propiedad para el propietario autenticado.
+ * Si se incluye imageUrl, se asocia automáticamente como fotografía de la propiedad.
+ */
+export async function createProperty(
+  data: CreatePropertyData,
+  imageUrl?: string
+): Promise<Property> {
+  const response = await api.post<Property>("/properties/", data);
+  const createdProp = response.data;
+
+  if (imageUrl && imageUrl.trim()) {
+    try {
+      const imgRes = await api.post<PropertyImage>(`/properties/${createdProp.id}/images`, {
+        image_url: imageUrl.trim(),
+      });
+      createdProp.images = [imgRes.data];
+    } catch (imgErr) {
+      console.warn("No se pudo asociar la imagen inicial a la propiedad:", imgErr);
+    }
+  }
+
+  return createdProp;
+}
+
+export interface Alert {
+  id: number;
+  tenant_id: number;
+  neighborhood: string;
+  max_price: number;
+  min_bedrooms: number;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface CreateAlertData {
+  neighborhood: string;
+  max_price: number;
+  min_bedrooms: number;
+  is_active?: boolean;
+}
+
+/**
+ * Registra una nueva alerta de búsqueda de alquiler para un inquilino.
+ */
+export async function createAlert(data: CreateAlertData): Promise<Alert> {
+  const response = await api.post<Alert>("/alerts/", data);
+  return response.data;
+}
+
+/**
+ * Obtiene las alertas activas registradas por el inquilino autenticado.
+ */
+export async function getAlertsMe(): Promise<Alert[]> {
+  const response = await api.get<Alert[]>("/alerts/me");
+  return response.data;
+}
+
+/**
+ * Activa la suscripción de prueba gratuita de 30 días para propietarios.
+ */
+export async function startTrialSubscription(): Promise<any> {
+  const response = await api.post("/subscriptions/trial");
+  return response.data;
+}
+
+

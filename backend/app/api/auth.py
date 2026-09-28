@@ -13,7 +13,7 @@ from app.models.property import Property, PropertyStatusEnum
 from app.models.review import Review
 from app.schemas.user import UserCreate, UserRead, PublicUserProfile, PublicReviewItem
 from app.schemas.token import Token
-from app.api.deps import SessionDep
+from app.api.deps import SessionDep, CurrentUser
 
 router = APIRouter()
 
@@ -51,6 +51,13 @@ async def login_access_token(
         ),
         token_type="bearer",
     )
+
+@router.get("/me", response_model=UserRead)
+async def read_current_user(current_user: CurrentUser) -> Any:
+    """
+    Obtiene la información del usuario autenticado actualmente.
+    """
+    return current_user
 
 @router.post("/register", response_model=UserRead)
 async def register_user(session: SessionDep, user_in: UserCreate) -> Any:

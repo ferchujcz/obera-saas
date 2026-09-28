@@ -45,11 +45,11 @@ export function Navbar() {
               Explorar
             </Link>
             <Link
-              href="/#alertas"
+              href="/alerts"
               className="text-sm font-medium text-slate-300 hover:text-white transition-colors flex items-center gap-1.5"
             >
               <Bell className="w-3.5 h-3.5 text-blue-400" />
-              Alertas Activas
+              Radar de Alertas
             </Link>
             <Link
               href="/#como-funciona"
@@ -73,11 +73,19 @@ export function Navbar() {
                   )}
                 </div>
 
-                <Link href="/dashboard">
-                  <Button variant="secondary" size="sm" leftIcon={<User className="w-3.5 h-3.5" />}>
-                    Mi Panel
-                  </Button>
-                </Link>
+                {user?.role === "OWNER" ? (
+                  <Link href="/publish">
+                    <Button variant="primary" size="sm" leftIcon={<PlusCircle className="w-3.5 h-3.5" />}>
+                      Publicar Alquiler
+                    </Button>
+                  </Link>
+                ) : (
+                  <Link href="/alerts">
+                    <Button variant="secondary" size="sm" leftIcon={<Bell className="w-3.5 h-3.5" />}>
+                      Mis Alertas
+                    </Button>
+                  </Link>
+                )}
 
                 <Button
                   variant="ghost"
@@ -97,7 +105,7 @@ export function Navbar() {
                   </Button>
                 </Link>
 
-                <Link href="/register">
+                <Link href="/publish">
                   <Button
                     variant="primary"
                     size="sm"
@@ -135,12 +143,12 @@ export function Navbar() {
               Explorar Propiedades
             </Link>
             <Link
-              href="/#alertas"
+              href="/alerts"
               onClick={() => setMobileMenuOpen(false)}
               className="text-sm font-medium text-slate-300 hover:text-white py-2 flex items-center gap-2"
             >
               <Bell className="w-4 h-4 text-blue-400" />
-              Alertas Activas
+              Radar de Alertas
             </Link>
             <Link
               href="/#como-funciona"
@@ -157,11 +165,19 @@ export function Navbar() {
                 <div className="text-xs text-slate-400 pb-1">
                   Conectado como: <span className="text-white font-medium">{user?.email}</span>
                 </div>
-                <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
-                  <Button variant="secondary" size="md" className="w-full">
-                    Mi Panel
-                  </Button>
-                </Link>
+                {user?.role === "OWNER" ? (
+                  <Link href="/publish" onClick={() => setMobileMenuOpen(false)}>
+                    <Button variant="primary" size="md" className="w-full">
+                      Publicar Alquiler
+                    </Button>
+                  </Link>
+                ) : (
+                  <Link href="/alerts" onClick={() => setMobileMenuOpen(false)}>
+                    <Button variant="secondary" size="md" className="w-full">
+                      Mis Alertas
+                    </Button>
+                  </Link>
+                )}
                 <Button
                   variant="ghost"
                   size="md"
@@ -181,7 +197,7 @@ export function Navbar() {
                     Iniciar Sesión
                   </Button>
                 </Link>
-                <Link href="/register" onClick={() => setMobileMenuOpen(false)}>
+                <Link href="/publish" onClick={() => setMobileMenuOpen(false)}>
                   <Button variant="primary" size="md" className="w-full">
                     Publicar Propiedad
                   </Button>

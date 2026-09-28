@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { MapPin, BedDouble, Building2, FileText, Home } from "lucide-react";
 import { Property } from "@/lib/api";
 
@@ -16,7 +17,8 @@ export function PropertyCard({ property }: PropertyCardProps) {
       : null;
 
   return (
-    <article className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-slate-200/90 transition-all duration-200 flex flex-col group">
+    <Link href={`/property/${property.id}`} className="block h-full group focus:outline-none">
+      <article className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-slate-200/90 transition-all duration-200 flex flex-col h-full">
       {/* Contenedor de Imagen o Placeholder */}
       <div className="relative h-52 sm:h-56 w-full overflow-hidden bg-slate-100">
         {firstImage ? (
@@ -101,5 +103,6 @@ export function PropertyCard({ property }: PropertyCardProps) {
         </div>
       </div>
     </article>
+  </Link>
   );
 }

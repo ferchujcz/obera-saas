@@ -15,7 +15,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { isAxiosError } from "axios";
-import { login, register } from "@/lib/api";
+import { login, register, getMe } from "@/lib/api";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Button } from "@/components/ui/Button";
 
@@ -69,17 +69,36 @@ export default function LoginPage() {
       } else {
         // Modo Login
         const loginData = await login(email.trim(), password);
-        setAuth(loginData.access_token, {
+        let userProfile = {
           id: 0,
           email: email.trim(),
-          role: "TENANT", // Rol por defecto, se actualiza en dashboard
+          role: "TENANT",
           is_active: true,
-        });
+        };
+
+        try {
+          // Guardar token temporalmente en store para que el interceptor de axios lo envíe
+          setAuth(loginData.access_token, userProfile);
+          const me = await getMe();
+          userProfile = {
+            id: me.id,
+            email: me.email,
+            role: me.role,
+            is_active: me.is_active,
+          };
+          setAuth(loginData.access_token, userProfile);
+        } catch (meErr) {
+          console.warn("No se pudo obtener información adicional de /me:", meErr);
+        }
 
         setSuccessMessage("Sesión iniciada con éxito. Redirigiendo...");
         setTimeout(() => {
-          router.push("/");
-        }, 400);
+          if (userProfile.role === "OWNER") {
+            router.push("/publish");
+          } else {
+            router.push("/");
+          }
+        }, 500);
       }
     } catch (err: unknown) {
       console.error("Error de autenticación:", err);
