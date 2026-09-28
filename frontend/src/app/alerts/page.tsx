@@ -301,7 +301,7 @@ export default function TenantAlertsPage() {
                   <input
                     type="number"
                     min={1}
-                    step={1000}
+                    step="any"
                     required
                     value={maxPrice}
                     onChange={(e) => setMaxPrice(e.target.value)}

@@ -415,7 +415,7 @@ export default function PublishPropertyPage() {
                     <input
                       type="number"
                       min={1}
-                      step={100}
+                      step="any"
                       required
                       value={price}
                       onChange={(e) => setPrice(e.target.value)}

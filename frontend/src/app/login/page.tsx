@@ -176,6 +176,7 @@ export default function LoginPage() {
           {/* Switcher de Modos: Iniciar Sesión / Registrarse */}
           <div className="flex rounded-xl bg-slate-100 p-1 mb-6 text-xs font-semibold">
             <button
+              id="tab-login"
               type="button"
               onClick={() => {
                 setMode("login");
@@ -191,6 +192,7 @@ export default function LoginPage() {
               Iniciar Sesión
             </button>
             <button
+              id="tab-register"
               type="button"
               onClick={() => {
                 setMode("register");
@@ -318,6 +320,7 @@ export default function LoginPage() {
             {/* Botón de Envío */}
             <div className="pt-2">
               <button
+                id="btn-auth-submit"
                 type="submit"
                 disabled={isLoading}
                 className="w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
