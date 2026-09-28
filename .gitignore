@@ -1,0 +1,18 @@
+# Node & Frontend
+node_modules/
+.next/
+dist/
+build/
+.agents/**/node_modules/
+
+# Python & Backend
+__pycache__/
+*.pyc
+venv/
+.venv/
+backend/.env
+
+# OS & Temp
+.DS_Store
+Thumbs.db
+*.log
